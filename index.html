@@ -2551,7 +2551,7 @@
                     <div class="testimonial-author">
                         <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80" alt="Principal" class="author-img">
                         <div class="author-info">
-                            <h4>Sarah Johnson</h4>
+                            <h4>Dr.M.Sree Sai Durga Laxmi</h4>
                             <p>Principal, Greenwood Academy</p>
                         </div>
                     </div>
@@ -2563,7 +2563,7 @@
                     <div class="testimonial-author">
                         <img src="https://images.unsplash.com/photo-1557862921-37829c790f19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=871&q=80" alt="Director" class="author-img">
                         <div class="author-info">
-                            <h4>Michael Chen</h4>
+                            <h4>Dr.V.Nagaraju</h4>
                             <p>Director of Technology, Metro College</p>
                         </div>
                     </div>
@@ -2575,7 +2575,7 @@
                     <div class="testimonial-author">
                         <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Superintendent" class="author-img">
                         <div class="author-info">
-                            <h4>Dr. Robert Williams</h4>
+                            <h4>Dr.Shiva Prasad</h4>
                             <p>Superintendent, City School District</p>
                         </div>
                     </div>
@@ -2790,7 +2790,7 @@
                         </div>
                         <div>
                             <h4>Email Address</h4>
-                            <p>info@CubeNCraft.com</p>
+                            <p>info@cubencraft.com</p>
                         </div>
                     </div>
                 </div>
@@ -2810,7 +2810,7 @@
                             <textarea class="form-control" placeholder="Your Message" id="message" name="message" required></textarea>
                         </div>
                         <button type="submit" class="btn">Send Message</button>
-                        <input type="hidden" name="to" value="sathwikmadala@gmail.com">
+                        <input type="hidden" name="to" value="info@cubencraft.com">
                     </form>
                 </div>
             </div>
@@ -2948,20 +2948,32 @@
                 while (canvasContainer.firstChild) {
                     canvasContainer.removeChild(canvasContainer.firstChild);
                 }
-                
+
+                // Remove previous listeners (if any)
+                if (window._threejsCanvas && window._threejsListeners) {
+                    const prevCanvas = window._threejsCanvas;
+                    const listeners = window._threejsListeners;
+                    prevCanvas.removeEventListener('mousedown', listeners.mousedown);
+                    prevCanvas.removeEventListener('mousemove', listeners.mousemove);
+                    prevCanvas.removeEventListener('mouseup', listeners.mouseup);
+                    prevCanvas.removeEventListener('touchstart', listeners.touchstart);
+                    prevCanvas.removeEventListener('touchmove', listeners.touchmove);
+                    prevCanvas.removeEventListener('touchend', listeners.touchend);
+                }
+
                 // Scene setup
                 scene = new THREE.Scene();
                 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
                 renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-                
+
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 renderer.setPixelRatio(window.devicePixelRatio);
                 canvasContainer.appendChild(renderer.domElement);
-                
+
                 // Check current theme for particle color
                 const currentTheme = localStorage.getItem('theme') || 'dark';
                 let particleColor, torusColor;
-                
+
                 switch(currentTheme) {
                     case 'light':
                         particleColor = 0x0284c7;
@@ -2991,18 +3003,18 @@
                         particleColor = 0x6366f1;
                         torusColor = 0x8b5cf6;
                 }
-                
+
                 // Create particles
                 const particlesGeometry = new THREE.BufferGeometry();
                 const particlesCount = 2000;
                 const posArray = new Float32Array(particlesCount * 3);
-                
+
                 for(let i = 0; i < particlesCount * 3; i++) {
                     posArray[i] = (Math.random() - 0.5) * 20;
                 }
-                
+
                 particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-                
+
                 // Particle material
                 const particlesMaterial = new THREE.PointsMaterial({
                     size: 0.05,
@@ -3011,11 +3023,11 @@
                     opacity: 0.8,
                     blending: THREE.AdditiveBlending
                 });
-                
+
                 // Particle system
                 particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
                 scene.add(particlesMesh);
-                
+
                 // Create wireframe torus
                 const torusGeometry = new THREE.TorusGeometry(5, 1.5, 16, 100);
                 const torusMaterial = new THREE.MeshBasicMaterial({
@@ -3026,31 +3038,100 @@
                 });
                 torus = new THREE.Mesh(torusGeometry, torusMaterial);
                 scene.add(torus);
-                
+
                 // Lighting
                 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
                 scene.add(ambientLight);
-                
+
                 const pointLight = new THREE.PointLight(particleColor, 1);
                 pointLight.position.set(5, 5, 5);
                 scene.add(pointLight);
-                
+
                 const pointLight2 = new THREE.PointLight(torusColor, 1);
                 pointLight2.position.set(-5, -5, -5);
                 scene.add(pointLight2);
-                
+
                 // Camera position
                 camera.position.z = 15;
-                
-                // Mouse events for desktop
-                document.addEventListener('mousedown', onMouseDown);
-                document.addEventListener('mousemove', onMouseMove);
-                document.addEventListener('mouseup', onMouseUp);
-                
-                // Touch events for mobile
-                document.addEventListener('touchstart', onTouchStart);
-                document.addEventListener('touchmove', onTouchMove);
-                document.addEventListener('touchend', onTouchEnd);
+
+                // Mouse/touch events for canvas only
+                function onMouseDown(event) {
+                    isDragging = true;
+                    previousMousePosition = {
+                        x: event.clientX,
+                        y: event.clientY
+                    };
+                }
+
+                function onMouseMove(event) {
+                    if (!isDragging) return;
+                    const deltaMove = {
+                        x: event.clientX - previousMousePosition.x,
+                        y: event.clientY - previousMousePosition.y
+                    };
+                    rotationSpeed = {
+                        x: deltaMove.y * 0.01,
+                        y: deltaMove.x * 0.01
+                    };
+                    previousMousePosition = {
+                        x: event.clientX,
+                        y: event.clientY
+                    };
+                }
+
+                function onMouseUp() {
+                    isDragging = false;
+                }
+
+                function onTouchStart(event) {
+                    if (event.touches.length === 1) {
+                        isDragging = true;
+                        previousMousePosition = {
+                            x: event.touches[0].clientX,
+                            y: event.touches[0].clientY
+                        };
+                    }
+                }
+
+                function onTouchMove(event) {
+                    if (!isDragging || event.touches.length !== 1) return;
+                    const deltaMove = {
+                        x: event.touches[0].clientX - previousMousePosition.x,
+                        y: event.touches[0].clientY - previousMousePosition.y
+                    };
+                    rotationSpeed = {
+                        x: deltaMove.y * 0.01,
+                        y: deltaMove.x * 0.01
+                    };
+                    previousMousePosition = {
+                        x: event.touches[0].clientX,
+                        y: event.touches[0].clientY
+                    };
+                    event.preventDefault();
+                }
+
+                function onTouchEnd() {
+                    isDragging = false;
+                }
+
+                // Attach listeners to canvas only
+                renderer.domElement.addEventListener('mousedown', onMouseDown);
+                renderer.domElement.addEventListener('mousemove', onMouseMove);
+                renderer.domElement.addEventListener('mouseup', onMouseUp);
+                renderer.domElement.addEventListener('touchstart', onTouchStart);
+                renderer.domElement.addEventListener('touchmove', onTouchMove);
+                renderer.domElement.addEventListener('touchend', onTouchEnd);
+
+                // Store for cleanup next time
+                window._threejsCanvas = renderer.domElement;
+                window._threejsListeners = {
+                    mousedown: onMouseDown,
+                    mousemove: onMouseMove,
+                    mouseup: onMouseUp,
+                    touchstart: onTouchStart,
+                    touchmove: onTouchMove,
+                    touchend: onTouchEnd
+                };
                 
                 function onMouseDown(event) {
                     isDragging = true;
@@ -3551,24 +3632,38 @@
                         modalTitle.textContent = project.title;
                         modalSubtitle.textContent = project.subtitle;
                         modalDescription.textContent = project.description;
-                        
+
                         // Populate features
                         modalFeatures.innerHTML = '';
                         project.features.forEach(feature => {
                             const li = document.createElement('li');
-                            li.innerHTML = `<i class="fas fa-check-circle"></i> ${feature}`;
+                            li.innerHTML = `<i class=\"fas fa-check-circle\"></i> ${feature}`;
                             modalFeatures.appendChild(li);
                         });
-                        
+
                         // Populate gallery
                         modalGallery.innerHTML = '';
                         project.gallery.forEach(imageSrc => {
                             const galleryItem = document.createElement('div');
                             galleryItem.className = 'gallery-item';
-                            galleryItem.innerHTML = `<img src="${imageSrc}" alt="Project Image">`;
+                            galleryItem.innerHTML = `<img src=\"${imageSrc}\" alt=\"Project Image\">`;
                             modalGallery.appendChild(galleryItem);
                         });
-                        
+
+                        // Set overlay background color based on theme
+                        const theme = localStorage.getItem('theme') || 'dark';
+                        let overlayBg = '';
+                        switch(theme) {
+                            case 'light': overlayBg = 'linear-gradient(135deg, #e0f2feCC, #bae6fdCC)'; break;
+                            case 'light-brown': overlayBg = 'linear-gradient(135deg, #f0ece4CC, #e6dfd4CC)'; break;
+                            case 'peach': overlayBg = 'linear-gradient(135deg, #ffe8d6CC, #ffd4b2CC)'; break;
+                            case 'light-pink': overlayBg = 'linear-gradient(135deg, #fce4ecCC, #f8bbd0CC)'; break;
+                            case 'light-blue': overlayBg = 'linear-gradient(135deg, #e1f5feCC, #b3e5fcCC)'; break;
+                            case 'light-green': overlayBg = 'linear-gradient(135deg, #e8f5e9CC, #c8e6c9CC)'; break;
+                            default: overlayBg = 'linear-gradient(135deg, #0a0a0fcc, #6366f1cc)';
+                        }
+                        portfolioModal.style.background = overlayBg;
+
                         // Show modal
                         portfolioModal.classList.add('active');
                         document.body.style.overflow = 'hidden';
@@ -3579,6 +3674,7 @@
             // Close portfolio modal
             modalClose.addEventListener('click', function() {
                 portfolioModal.classList.remove('active');
+                portfolioModal.style.background = '';
                 document.body.style.overflow = 'auto';
             });
             
@@ -3586,6 +3682,7 @@
             portfolioModal.addEventListener('click', function(e) {
                 if (e.target === portfolioModal) {
                     portfolioModal.classList.remove('active');
+                    portfolioModal.style.background = '';
                     document.body.style.overflow = 'auto';
                 }
             });
@@ -3621,6 +3718,23 @@
                             serviceModalBenefits.appendChild(li);
                         });
                         
+                        // Apply current theme class ONLY to modal container
+                        const theme = localStorage.getItem('theme') || 'dark';
+                        const modalContainer = serviceModal.querySelector('.service-modal-container');
+                        modalContainer.classList.remove('dark-theme', 'light-theme', 'light-brown-theme', 'peach-theme', 'light-pink-theme', 'light-blue-theme', 'light-green-theme');
+                        modalContainer.classList.add(theme + '-theme');
+                        // Set overlay background color based on theme
+                        let overlayBg = '';
+                        switch(theme) {
+                            case 'light': overlayBg = 'linear-gradient(135deg, #e0f2feCC, #bae6fdCC)'; break;
+                            case 'light-brown': overlayBg = 'linear-gradient(135deg, #f0ece4CC, #e6dfd4CC)'; break;
+                            case 'peach': overlayBg = 'linear-gradient(135deg, #ffe8d6CC, #ffd4b2CC)'; break;
+                            case 'light-pink': overlayBg = 'linear-gradient(135deg, #fce4ecCC, #f8bbd0CC)'; break;
+                            case 'light-blue': overlayBg = 'linear-gradient(135deg, #e1f5feCC, #b3e5fcCC)'; break;
+                            case 'light-green': overlayBg = 'linear-gradient(135deg, #e8f5e9CC, #c8e6c9CC)'; break;
+                            default: overlayBg = 'linear-gradient(135deg, #0a0a0fcc, #6366f1cc)';
+                        }
+                        serviceModal.style.background = overlayBg;
                         // Show modal
                         serviceModal.classList.add('active');
                         document.body.style.overflow = 'hidden';
@@ -3631,6 +3745,9 @@
             // Close service modal
             serviceModalClose.addEventListener('click', function() {
                 serviceModal.classList.remove('active');
+                const modalContainer = serviceModal.querySelector('.service-modal-container');
+                modalContainer.classList.remove('dark-theme', 'light-theme', 'light-brown-theme', 'peach-theme', 'light-pink-theme', 'light-blue-theme', 'light-green-theme');
+                serviceModal.style.background = '';
                 document.body.style.overflow = 'auto';
             });
             
@@ -3638,6 +3755,9 @@
             serviceModal.addEventListener('click', function(e) {
                 if (e.target === serviceModal) {
                     serviceModal.classList.remove('active');
+                    const modalContainer = serviceModal.querySelector('.service-modal-container');
+                    modalContainer.classList.remove('dark-theme', 'light-theme', 'light-brown-theme', 'peach-theme', 'light-pink-theme', 'light-blue-theme', 'light-green-theme');
+                    serviceModal.style.background = '';
                     document.body.style.overflow = 'auto';
                 }
             });
